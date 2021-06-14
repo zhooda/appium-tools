@@ -40,7 +40,7 @@ def install_app(device: Device):
 
     version = int(get_app_version(device, CHROME_BUNDLE).split('.')[0])
 
-    if version >= 87:
+    if version > 87:
         logging.info(f'bad {CHROME_BUNDLE} version: {version}')
         
         logging.info(f'uninstalling {CHROME_BUNDLE} version: {version}')
@@ -64,7 +64,7 @@ def install_app(device: Device):
     else:
         logging.info(f'{CHROME_BUNDLE} version {version} OK!')
         
-    logging.info(f'finished processing device: {model}')
+    logging.info(f'finished processing device: {model}\n')
             
 if __name__ == "__main__":
     
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     logging.basicConfig(format=FORMAT, level=logging.INFO)
     
     if not os.path.isfile(LOCAL_APK_PATH):
-        logging.info('could not find apk file, downloading from drive')
+        logging.info('could not find apk file, downloading from drive\n')
         download_chrome_apk()
     
     devices = CLIENT.devices()
@@ -84,4 +84,4 @@ if __name__ == "__main__":
             logging.error(e)
 
     valid_versions = all(validate_app_version(device, CHROME_BUNDLE) for device in devices)
-    logging.info(f'\n\nAll devices have valid Chrome versions: {valid_versions}')
+    logging.info(f'All devices have valid Chrome versions: {valid_versions}')
