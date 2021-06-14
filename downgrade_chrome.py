@@ -84,4 +84,4 @@ if __name__ == "__main__":
             logging.error(e)
 
     valid_versions = all(validate_app_version(device, CHROME_BUNDLE) for device in devices)
-    logging.info('\n\nAll devices have valid Chrome versions: ' + valid_versions)
+    logging.info(f'\n\nAll devices have valid Chrome versions: {valid_versions}')
