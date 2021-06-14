@@ -24,9 +24,12 @@ def get_app_version(device: Device, bundle: str) -> str:
     
     cmd = f"dumpsys package {bundle} | grep versionName"
     versions = device.shell(cmd).strip().split('\n')#.split("=")[-1]#.split('.')[0]
-    versions = [v.split('=')[-1] for v in versions]
+    versions = [v.split('=')[-1].strip() for v in versions]
 
-    return min(versions)
+    return max(versions)
+
+def validate_app_version(device: Device, version: str='87.0.4280.141') -> bool:
+    return get_app_version(device, CHROME_BUNDLE) <= version
 
 def install_app(device: Device):
     model = device.shell("getprop ro.product.model").strip()
@@ -37,68 +40,41 @@ def install_app(device: Device):
     if version >= 87:
         logging.info(f'bad {CHROME_BUNDLE} version: {version}')
         
+        logging.info(f'uninstalling {CHROME_BUNDLE} version: {version}')
+        device.uninstall(CHROME_BUNDLE)
+
         logging.info(f'pushing {LOCAL_APK_PATH} to {DEVICE_APK_PATH}')
         device.push(LOCAL_APK_PATH, DEVICE_APK_PATH)
         
         logging.info(f'downgrading {CHROME_BUNDLE} to {DEVICE_APK_PATH}')
-        output = device.shell(f"pm install -d {DEVICE_APK_PATH}").strip()
-        logging.info(f'downgrade status: {output}')
+        output = device.shell(f"pm install -r {DEVICE_APK_PATH}").strip()
         
         logging.info(f'cleaning up {CHROME_BUNDLE} remenants')
         device.shell(f"rm -f {DEVICE_APK_PATH}")
         
         if not output.startswith('Success'):
-            raise DowngradeError((f"Could not downgrade {CHROME_BUNDLE}"
-                                    f" to {DEVICE_APK_PATH}"))
+            logging.error(f'downgrade failed: {output}')
+        else:
+            logging.info(f'downgrade status: {output}')
+            # raise DowngradeError((f"Could not downgrade {CHROME_BUNDLE}"
+            #                         f": {output.strip()}"))
     else:
         logging.info(f'{CHROME_BUNDLE} version {version} OK!')
         
     logging.info(f'finished processing device: {model}')
-
-def main():
-    # 127.0.0.1:5037 is the default
-    logging.info('starting ADB client')
-    client = ADBClient(host="127.0.0.1", port=5037)
-
-    logging.info('getting connected devices')
-    devices = client.devices()
-
-    for device in devices:
-        model = device.shell("getprop ro.product.model")
-        logging.info(f'processing device: {model}')
-        version = get_app_version(device, CHROME_BUNDLE)
-
-        if version >= 87:
-            logging.info(f'bad {CHROME_BUNDLE} version: {version}')
-            
-            logging.info(f'pushing {LOCAL_APK_PATH} to {DEVICE_APK_PATH}')
-            device.push(LOCAL_APK_PATH, DEVICE_APK_PATH)
-            
-            logging.info(f'downgrading {CHROME_BUNDLE} to {DEVICE_APK_PATH}')
-            output = device.shell(f"pm install -d {DEVICE_APK_PATH}").strip()
-            logging.info(f'downgrade status: {output}')
-            
-            device.shell(f"rm -f {DEVICE_APK_PATH}")
-            
-            if not output.startswith('Success'):
-                raise DowngradeError((f"Could not downgrade {CHROME_BUNDLE}"
-                                      f" to {DEVICE_APK_PATH}"))
-        else:
-            logging.info(f'{CHROME_BUNDLE} version {version} OK!')
-            
-        logging.info(f'finished processing device: {model}')
             
 if __name__ == "__main__":
     
     FORMAT = "[%(levelname)s] %(message)s"
     logging.basicConfig(format=FORMAT, level=logging.INFO)
     
-    # try:
-    #     main()
-    # except DowngradeError as e:
-    #     logging.error(f'Error downgrading chrome version: {e}. Please try again')
-    
     devices = CLIENT.devices()
     
     for device in devices:
-        install_app(device)
+        try:
+            install_app(device)
+        except DowngradeError as e:
+            logging.error(e)
+
+    valid_versions = all(validate_app_version(device, CHROME_BUNDLE) for device in devices)
+    logging.info('\n\nAll devices have valid Chrome versions: ' + valid_versions)
