@@ -1,7 +1,10 @@
 import logging
+import os
 
 from ppadb.client import Client as ADBClient
 from ppadb.device import Device
+
+from download_chrome import download_chrome_apk
 
 CLIENT = ADBClient(host="127.0.0.1", port=5037)
 
@@ -67,6 +70,10 @@ if __name__ == "__main__":
     
     FORMAT = "[%(levelname)s] %(message)s"
     logging.basicConfig(format=FORMAT, level=logging.INFO)
+    
+    if not os.path.isfile(LOCAL_APK_PATH):
+        logging.info('could not find apk file, downloading from drive')
+        download_chrome_apk()
     
     devices = CLIENT.devices()
     

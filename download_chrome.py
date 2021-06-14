@@ -33,5 +33,8 @@ def save_response_content(response, destination):
             if chunk: # filter out keep-alive new chunks
                 f.write(chunk)
                 
+def download_chrome_apk():
+    download_file_from_google_drive("1Ks5_sYgR93mqvLODhC7pBivsyBWDtsvg", "chrome_v87.0.apk")
+                
 if __name__ == "__main__":
     download_file_from_google_drive("1Ks5_sYgR93mqvLODhC7pBivsyBWDtsvg", "chrome_v87.0.apk")
