@@ -20,6 +20,9 @@ def get_device(udid: str) -> Device:
     """Returns device with UDID"""
     return CLIENT.device(udid)
 
+def get_devices():
+    return len(CLIENT.devices())
+
 def get_app_version(device: Device, bundle: str) -> str:
     """Returns major app version from Android device"""
     
@@ -40,7 +43,7 @@ def install_app(device: Device):
 
     version = int(get_app_version(device, CHROME_BUNDLE).split('.')[0])
 
-    if version > 87:
+    if version >= 87:
         logging.info(f'bad {CHROME_BUNDLE} version: {version}')
         
         logging.info(f'uninstalling {CHROME_BUNDLE} version: {version}')
