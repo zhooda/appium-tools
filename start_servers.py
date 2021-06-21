@@ -3,13 +3,23 @@ import sys
 
 from downgrade_chrome import get_devices
 
-PORT = 4723
+PORT = 4725
 SYS_PORT = 8200
 
 def create_server_command(port: int, system_port: int):
-    cmd = (f"appium --allow-insecure chrome_autodownload "
-           f"-p {port} -dc {{\"systemPort\":{system_port}}}")
-    return cmd.split()
+    cmd = (f"appium --allow-insecure chromedriver_autodownload "
+           f"-p {port} -dc").split()
+    caps = f"{{\"systemPort\":{system_port}, \"chromedriverChromeMappingFile\": \"/Users/pankajakshanramaswamy/Desktop/appium-automation/drivers/mapping.json\"}}"
+    
+    caps = ( "{"
+            f'"systemPort": {system_port}}}') #,'
+ #           f'"chromedriverChromeMappingFile": "/Users/pankajakshanramaswamy/Desktop/appium-automation/drivers/mapping.json",'
+  #          f'"chromedriverExecutableDir": "/Users/pankajakshanramaswamy/Desktop/appium-automation/drivers/"'
+   #          "}")
+
+    cmd.append(caps)
+    print(' '.join(cmd))
+    return cmd
 
 if __name__ == "__main__":
     if not get_devices():

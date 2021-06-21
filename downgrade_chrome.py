@@ -32,7 +32,7 @@ def get_app_version(device: Device, bundle: str) -> str:
     versions = device.shell(cmd).strip().split('\n')#.split("=")[-1]#.split('.')[0]
     versions = [v.split('=')[-1].strip() for v in versions]
 
-    return max(versions)
+    return versions
 
 def validate_app_version(device: Device, version: str='87.0.4280.141') -> bool:
     return get_app_version(device, CHROME_BUNDLE) <= version
