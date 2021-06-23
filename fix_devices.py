@@ -20,8 +20,13 @@ if __name__ == "__main__":
     devices = dg.CLIENT.devices()
     
     for device in devices:
-        model = device.shell("getprop ro.product.model").strip()
-        udid = device.shell("getprop ro.serialno").strip()
+        
+        try:
+            model = device.shell("getprop ro.product.model").strip()
+            udid = device.shell("getprop ro.serialno").strip()
+        except Exception as e:
+            print(f'device error: {e}')
+            continue
         
         for package in APPIUM_ARTIFACTS:
             try:

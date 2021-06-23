@@ -22,11 +22,16 @@ def create_server_command(port: int, system_port: int):
     return cmd
 
 if __name__ == "__main__":
+    
+    additional = 0
+    if len(sys.argv) > 1:
+        additional = int(sys.argv[-1])
+    
     if not get_devices():
         sys.exit(0)
     try:
         childprocs = []
-        for i in range(get_devices()):
+        for i in range(get_devices() + additional):
             proc = subprocess.Popen(create_server_command(PORT + i, SYS_PORT + i))
             childprocs.append(proc)
         while True: pass

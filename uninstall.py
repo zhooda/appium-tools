@@ -2,18 +2,23 @@ import downgrade_chrome as dg
 
 if __name__ == '__main__':
     devices = dg.CLIENT.devices()
-    try:
-        models = [d.shell("getprop ro.product.model").strip() for d in devices]
-        udids = [d.shell("getprop ro.serialno").strip() for d in devices]
-    except Exception as e:
-        print(e)
+    
+    models, udids = [], []
+    for d in devices:
+        try:
+            models.append(d.shell("getprop ro.product.model").strip())
+            udids.append(d.shell("getprop ro.serialno").strip())
+        # models = [d.shell("getprop ro.product.model").strip() for d in devices]
+        # udids = [d.shell("getprop ro.serialno").strip() for d in devices]
+        except Exception as e:
+            print(e)
         
     model_spacing = max(map(len, models))
     udid_spacing = max(map(len, udids))
 
     print(f'{"model":{model_spacing}}  {"udid":{udid_spacing}}   {"webview":13} {"chrome":13}')
 
-    for i in range(len(devices)):
+    for i in range(len(models)):
         device = devices[i]
         try:
             model, udid = models[i], udids[i]
