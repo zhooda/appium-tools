@@ -23,3 +23,12 @@ cd appium-tools
 pip install -r requirements.txt
 python downgrade_chrome.py
 ```
+
+## Closing `chrome://inspect` Stragglers
+
+If `chrome://inspect` windows are open, devices do not show up in ADB. To get around this on macOS, I've included an applescript to close all Chrome tabs that contain the strings `inspect` or `DevTools`.
+
+```bash
+cd appium-tools
+osascript cleanup_chrome.applescript
+```
