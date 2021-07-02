@@ -1,4 +1,4 @@
-# Fro: https://gist.github.com/rentzsch/1047967
+# From: https://gist.github.com/rentzsch/1047967
 
 property inspect : "inspect"
 property devTools : "DevTools"

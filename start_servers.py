@@ -12,10 +12,7 @@ def create_server_command(port: int, system_port: int):
     caps = f"{{\"systemPort\":{system_port}, \"chromedriverChromeMappingFile\": \"/Users/pankajakshanramaswamy/Desktop/appium-automation/drivers/mapping.json\"}}"
     
     caps = ( "{"
-            f'"systemPort": {system_port}}}') #,'
- #           f'"chromedriverChromeMappingFile": "/Users/pankajakshanramaswamy/Desktop/appium-automation/drivers/mapping.json",'
-  #          f'"chromedriverExecutableDir": "/Users/pankajakshanramaswamy/Desktop/appium-automation/drivers/"'
-   #          "}")
+            f'"systemPort": {system_port}}}')
 
     cmd.append(caps)
     print(' '.join(cmd))

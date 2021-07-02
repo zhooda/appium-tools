@@ -10,6 +10,12 @@ osascript cleanup_chrome.applescript
 # fix_devices.py
 python fix_devices.py
 
+# reboot devices
+adb -s 19347523600322 reboot
+adb -s 5200a594c0ba5559 reboot
+
+sleep 5m
+
 # uninstall.py
 python uninstall.py
 
